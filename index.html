@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>遇事不决问 Jev · ASK JEV</title>
+<meta name="description" content="把处境摊开，让 Jev 给出一个不带犹豫的答案。选项、评分、是否——三类决断，一次落定。" />
+<meta name="theme-color" content="#ffffff" />
+<meta property="og:title" content="遇事不决问 Jev" />
+<meta property="og:description" content="雾里看不清的时候，把处境交给它。" />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0a0a'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' fill='%23ffffff' text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+
+<div class="aura" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="beam" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="mark" href="./" aria-label="遇事不决问 Jev">
+    <span class="mark-glyph">J</span>
+    <span class="mark-text">遇事不决<em>ASK JEV</em></span>
+  </a>
+  <button class="key-btn" id="keyBtn" type="button">
+    <span class="dot" id="keyDot"></span>
+    <span id="keyBtnLabel">API KEY</span>
+  </button>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="eyebrow reveal">SYSTEM ONE · 直觉层</p>
+    <h1 class="hero-title reveal">
+      <span class="t1">遇事不决</span>
+      <span class="t2">问 Jev</span>
+    </h1>
+    <p class="lede reveal">
+      雾里看不清的时候，把处境交给它。<br />
+      七十毫秒，一个不带犹豫的答案。
+    </p>
+    <div class="hero-foot reveal">
+      <span class="rule"></span>
+      <span class="scroll-hint">向下 · 陈述你的困境</span>
+    </div>
+  </section>
+
+  <section class="ritual" id="ritual">
+    <form id="form" novalidate autocomplete="off">
+
+      <div class="step reveal" data-step="1">
+        <div class="step-head">
+          <span class="num">01</span>
+          <h2>背景</h2>
+          <span class="en">CONTEXT</span>
+        </div>
+        <textarea id="context" rows="4" maxlength="6000"
+          placeholder="把处境摊开：时间、人物、已经发生的事、你真正担心的东西。"></textarea>
+        <div class="meta">
+          <span>写得越具体，答案越靠近你。</span>
+          <span class="count" id="contextCount">0 / 6000</span>
+        </div>
+      </div>
+
+      <div class="step reveal" data-step="2">
+        <div class="step-head">
+          <span class="num">02</span>
+          <h2>决断类型</h2>
+          <span class="en">MODE</span>
+        </div>
+        <div class="segmented" role="tablist" aria-label="决断类型">
+          <button type="button" role="tab" class="seg is-on" data-mode="choice" aria-selected="true">选项</button>
+          <button type="button" role="tab" class="seg" data-mode="score" aria-selected="false">评分</button>
+          <button type="button" role="tab" class="seg" data-mode="noul" aria-selected="false">是否</button>
+        </div>
+
+        <div class="mode-panel is-on" data-panel="choice">
+          <div class="editor-head">
+            <span>候选 / 至少两项</span>
+            <span class="hint-mini">Jev 会给出完整概率分布</span>
+          </div>
+          <div class="rows" id="choiceRows"></div>
+          <button type="button" class="ghost-add" id="addChoice">＋ 添加一个选项</button>
+        </div>
+
+        <div class="mode-panel" data-panel="score">
+          <div class="editor-head">
+            <span>刻度 / 由低到高</span>
+            <span class="hint-mini">2 – 10 档</span>
+          </div>
+          <div class="rows" id="scaleRows"></div>
+          <button type="button" class="ghost-add" id="addLevel">＋ 添加一档</button>
+        </div>
+
+        <div class="mode-panel" data-panel="noul">
+          <p class="hint-block">
+            只问一句是或否。Jev 返回的是「是」的概率——<br />
+            越接近 100%，越不必再犹豫。
+          </p>
+        </div>
+      </div>
+
+      <div class="step reveal" data-step="3">
+        <div class="step-head">
+          <span class="num">03</span>
+          <h2>待决之事</h2>
+          <span class="en">QUESTION</span>
+        </div>
+        <textarea id="question" rows="2" maxlength="600"
+          placeholder="例如：我该不该接下这个 offer？"></textarea>
+        <div class="meta">
+          <span>一句话，说清你要定的那件事。</span>
+          <span class="count" id="questionCount">0 / 600</span>
+        </div>
+      </div>
+
+      <div class="submit-wrap reveal">
+        <button class="submit" type="submit" id="submitBtn">
+          <span class="submit-cn">求问</span>
+          <span class="submit-en">CONSULT THE ORACLE</span>
+        </button>
+        <p class="error" id="formError" role="alert"></p>
+      </div>
+    </form>
+  </section>
+
+  <footer class="foot">
+    <span>Jev 给出的是判断信号，不是命令。后果仍归你。</span>
+    <a href="https://jevtypesafe.org/docs/api" target="_blank" rel="noopener noreferrer">API 文档 ↗</a>
+  </footer>
+</main>
+
+<!-- 求问中：迷雾 -->
+<div class="veil" id="veil" aria-hidden="true">
+  <div class="veil-blob b1"></div>
+  <div class="veil-blob b2"></div>
+  <div class="veil-blob b3"></div>
+  <div class="veil-core">
+    <span class="veil-glyph">J</span>
+    <p class="veil-text" id="veilText">正在拨开迷雾</p>
+    <span class="veil-line"></span>
+  </div>
+</div>
+
+<!-- 判词 -->
+<section class="verdict" id="verdict" role="dialog" aria-modal="true" aria-labelledby="verdictAnswer" hidden>
+  <div class="verdict-inner">
+    <p class="v-eyebrow">THE ORACLE HAS SPOKEN</p>
+    <div class="v-answer" id="verdictAnswer">—</div>
+    <p class="v-question" id="verdictQuestion"></p>
+
+    <div class="v-metrics">
+      <div class="metric">
+        <span class="k">置信度</span>
+        <span class="v" id="verdictConf">—</span>
+      </div>
+      <div class="metric">
+        <span class="k">类型</span>
+        <span class="v" id="verdictType">—</span>
+      </div>
+      <div class="metric">
+        <span class="k">模型</span>
+        <span class="v mono" id="verdictModel">—</span>
+      </div>
+    </div>
+
+    <div class="v-dist" id="verdictDist"></div>
+
+    <div class="v-actions">
+      <button type="button" class="btn" id="againBtn">再问一次</button>
+      <button type="button" class="btn" id="copyBtn">复制判词</button>
+      <button type="button" class="btn btn-ghost" id="closeBtn">回到尘世</button>
+    </div>
+  </div>
+</section>
+
+<!-- 设置 -->
+<div class="modal" id="keyModal" hidden>
+  <div class="modal-scrim" data-close></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h3 id="modalTitle">接入 Jev</h3>
+      <button type="button" class="x" data-close aria-label="关闭">×</button>
+    </div>
+    <p class="modal-note">
+      Key 只存在这台设备的 localStorage，不经过任何服务器。页面是纯静态的，请求由你的浏览器直发 Jev。
+    </p>
+
+    <label class="field">
+      <span class="field-k">API KEY</span>
+      <div class="field-input">
+        <input id="apiKey" type="password" placeholder="jv_live_…" spellcheck="false" autocomplete="off" />
+        <button type="button" class="peek" id="peekBtn" aria-label="显示或隐藏 Key">显示</button>
+      </div>
+    </label>
+
+    <label class="field">
+      <span class="field-k">端点</span>
+      <input id="endpoint" type="text" spellcheck="false" autocomplete="off" />
+    </label>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="testBtn">测试连接</button>
+      <button type="button" class="btn btn-solid" id="saveBtn">保存</button>
+    </div>
+    <p class="test-result" id="testResult"></p>
+    <p class="modal-foot">
+      还没有 Key？<a href="https://jevtypesafe.org/" target="_blank" rel="noopener noreferrer">去 Jev 取一个 ↗</a>
+    </p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="./assets/app.js"></script>
+</body>
+</html>

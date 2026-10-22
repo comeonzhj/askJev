@@ -1228,6 +1228,15 @@ body.is-seeking .veil {
   background: var(--white);
 }
 
+.field-hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: var(--gray-40);
+  letter-spacing: 0.02em;
+}
+
 .field-input {
   position: relative;
 }

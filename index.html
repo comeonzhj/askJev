@@ -127,7 +127,7 @@
 
   <footer class="foot">
     <span>Jev 给出的是判断信号，不是命令。后果仍归你。</span>
-    <a href="https://jevtypesafe.org/docs/api" target="_blank" rel="noopener noreferrer">API 文档 ↗</a>
+    <a href="https://docs.typesafe.ai/api.md" target="_blank" rel="noopener noreferrer">API 文档 ↗</a>
   </footer>
 </main>
 
@@ -184,13 +184,13 @@
       <button type="button" class="x" data-close aria-label="关闭">×</button>
     </div>
     <p class="modal-note">
-      Key 只存在这台设备的 localStorage，不经过任何服务器。页面是纯静态的，请求由你的浏览器直发 Jev。
+      Key 只存在这台设备的 localStorage，不经过任何服务器。页面是纯静态的，请求由你的浏览器直发 TypeSafe。
     </p>
 
     <label class="field">
       <span class="field-k">API KEY</span>
       <div class="field-input">
-        <input id="apiKey" type="password" placeholder="jv_live_…" spellcheck="false" autocomplete="off" />
+        <input id="apiKey" type="password" placeholder="apikey_…" spellcheck="false" autocomplete="off" />
         <button type="button" class="peek" id="peekBtn" aria-label="显示或隐藏 Key">显示</button>
       </div>
     </label>
@@ -198,6 +198,7 @@
     <label class="field">
       <span class="field-k">端点</span>
       <input id="endpoint" type="text" spellcheck="false" autocomplete="off" />
+      <span class="field-hint">官方：https://api.typesafe.ai/v1/systemone。若此地址在你的网络下不可达，可换成自己的转发地址（需返回 CORS 头）。</span>
     </label>
 
     <div class="modal-actions">
@@ -206,7 +207,7 @@
     </div>
     <p class="test-result" id="testResult"></p>
     <p class="modal-foot">
-      还没有 Key？<a href="https://jevtypesafe.org/" target="_blank" rel="noopener noreferrer">去 Jev 取一个 ↗</a>
+      还没有 Key？<a href="https://docs.typesafe.ai/api.md" target="_blank" rel="noopener noreferrer">看接口文档 ↗</a>
     </p>
   </div>
 </div>

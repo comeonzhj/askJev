@@ -6,9 +6,13 @@
 (() => {
   "use strict";
 
-  const DEFAULT_ENDPOINT = "https://jevtypesafe.org/api/v1/decide";
+  const DEFAULT_ENDPOINT = "https://api.typesafe.ai/v1/systemone";
+  const MODEL = "jev-latest";
   const STORE_KEY = "askjev.settings.v1";
   const MAX_STATE = 8000;
+
+  // 早期版本把端点指向了一个第三方镜像，统一迁回官方。
+  const LEGACY_HOSTS = ["jevtypesafe.org"];
 
   const LIMITS = { choice: { min: 2, max: 20 }, score: { min: 2, max: 10 } };
 
@@ -24,12 +28,18 @@
     last: null,
   };
 
+  function normalizeEndpoint(url) {
+    if (!url) return DEFAULT_ENDPOINT;
+    if (LEGACY_HOSTS.some((host) => url.includes(host))) return DEFAULT_ENDPOINT;
+    return url;
+  }
+
   function loadSettings() {
     try {
       const raw = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
       return {
         apiKey: typeof raw.apiKey === "string" ? raw.apiKey : "",
-        endpoint: raw.endpoint || DEFAULT_ENDPOINT,
+        endpoint: normalizeEndpoint(raw.endpoint),
       };
     } catch {
       return { apiKey: "", endpoint: DEFAULT_ENDPOINT };
@@ -297,7 +307,7 @@
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ model: MODEL, ...payload }),
       signal,
     });
 
@@ -317,7 +327,7 @@
     }
 
     const answers = (data && (data.answers || (data.data && data.data.answers))) || null;
-    if (!answers) throw new Error("返回里没有答案，检查端点是否为 Jev 的 decide 接口。");
+    if (!answers) throw new Error("返回里没有 answers 字段，检查端点是否为 /v1/systemone。");
 
     return {
       answers,
@@ -329,11 +339,14 @@
   function describeError(err) {
     if (err.name === "AbortError") return "等待超时。灯没亮，换个网络或稍后再试。";
     const s = err.status;
+    if (s === 400) return `请求被拒绝：${err.message}`;
     if (s === 401 || s === 403) return "API Key 不被接受。检查是否填错，或该 Key 已失效。";
     if (s === 402) return "账户余额不足，Jev 拒绝了这次求问。";
     if (s === 413) return "背景信息过长，Jev 只收 8000 字符以内。";
+    if (s === 422) return `请求体不合格：${err.message}`;
     if (s === 429) return "请求太密集，等几秒再问。";
-    if (s === 451) return "当前网络所在区域被 Jev 屏蔽。试试更换网络出口。";
+    if (s === 451) return "当前网络所在区域被 Jev 屏蔽（HTTP 451）。需要换一个能访问 api.typesafe.ai 的网络出口。";
+    if (s === 529) return "Jev 过载了，稍等几秒再问。";
     if (s >= 500) return "Jev 那边出了故障，暂时没有回应。";
     if (err instanceof TypeError) return "请求发不出去。可能是网络问题，或端点不允许跨域。";
     return err.message || "发生了未知错误。";
@@ -374,6 +387,13 @@
     veilTimer = null;
   }
 
+  function levelLabels(answer) {
+    const fallback = state.last.levels || [];
+    const legend = answer.legend || {};
+    const count = Math.max(fallback.length, Object.keys(legend).length);
+    return Array.from({ length: count }, (_, i) => legend[String(i)] || fallback[i] || String(i + 1));
+  }
+
   function answerText(answer, mode, map) {
     if (mode === "choice") {
       const raw = answer.choice;
@@ -382,7 +402,8 @@
     }
     if (mode === "score") {
       if (typeof answer.score !== "number") return "无解";
-      return state.last.levels[Math.round(answer.score)] || String(answer.score);
+      const levels = levelLabels(answer);
+      return levels[Math.round(answer.score)] || String(answer.score);
     }
     return Number(answer.noul) >= 0.5 ? "是" : "否";
   }
@@ -408,7 +429,7 @@
         .sort((a, b) => b.value - a.value);
     } else if (mode === "score") {
       const probs = answer.probabilities || {};
-      rows = state.last.levels.map((label, i) => ({
+      rows = levelLabels(answer).map((label, i) => ({
         label,
         value: Number(probs[String(i)]) || 0,
         top: Math.round(answer.score) === i,

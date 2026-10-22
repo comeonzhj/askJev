@@ -4,7 +4,7 @@
 
 在线地址：**https://comeonzhj.github.io/askJev/**
 
-一个极简的决策页面：写清背景，选一种决断方式，把问题交给 [Jev](https://jevtypesafe.org/) 的 System One 模型，几秒后得到一个不带犹豫的答案。
+一个极简的决策页面：写清背景，选一种决断方式，把问题交给 [Jev](https://typesafe.ai/) 的 System One 模型，几百毫秒后得到一个不带犹豫的答案。
 
 白、黑、灰。没有第三种颜色。
 
@@ -23,7 +23,7 @@ Jev 不是聊天模型。它读一段 state，返回类型化的判断：一个�
 ## 使用
 
 1. 打开页面，右上角 **API KEY**。
-2. 填入 Jev 的 API Key（`jv_live_…`），可以点「测试连接」验证。
+2. 填入 TypeSafe 控制台里申请的 API Key，可以点「测试连接」验证。
 3. 写下背景，选类型，写下待决之事，求问。
 
 Key 只写入当前浏览器的 `localStorage`，不经过任何服务器。页面是纯静态的，请求由浏览器直接发往 Jev。
@@ -42,9 +42,12 @@ python3 -m http.server 4173
 ## 技术说明
 
 - 纯 HTML / CSS / JavaScript，无依赖、无框架、无打包。
-- 请求端点默认 `https://jevtypesafe.org/api/v1/decide`，可在设置里改成自建代理。
-  官方域名 `api.typesafe.ai` 在部分区域会返回 451，故默认使用前者。
-- `state` 由「背景 + 待决之事」拼接，上限 8000 字符，前端会提前校验。
+- 请求发往官方 `POST https://api.typesafe.ai/v1/systemone`，`Authorization: Bearer <API_KEY>`，请求体带 `model: jev-latest`。
+- 端点可在设置里替换。官方接口不返回 `Access-Control-Allow-Origin`，浏览器直接读取响应会被 CORS 拦下；
+  需要直连时，指向一个自己搭的、带 CORS 头的转发地址即可，Key 仍然由前端手动填写。
+- `api.typesafe.ai` 对部分区域返回 451，需要相应网络出口。
+- `state` 由「背景 + 待决之事」拼接，前端按 8000 字符提前校验。
+- 评分优先读响应里的 `legend` 还原档位文案，缺失时回退到本地刻度。
 - 选项在请求里映射为 `opt_1…opt_n`，回包再映射回原文，避免选项文本里的特殊字符影响 criteria key。
 - 尊重 `prefers-reduced-motion`。
 

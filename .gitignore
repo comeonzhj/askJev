@@ -3,3 +3,9 @@ Thumbs.db
 node_modules/
 *.log
 .env
+
+# 服务器密钥，绝不入库
+servers/
+*.pem
+*.key
+.env*

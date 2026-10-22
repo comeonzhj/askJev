@@ -6,13 +6,16 @@
 (() => {
   "use strict";
 
-  const DEFAULT_ENDPOINT = "https://api.typesafe.ai/v1/systemone";
+  // 默认走自己的转发（个人服务器，只加 CORS 头，不存 Key）。
+  const DEFAULT_ENDPOINT = "https://askjev.comeonzhj.com/v1/systemone";
   const MODEL = "jev-latest";
   const STORE_KEY = "askjev.settings.v1";
   const MAX_STATE = 8000;
 
-  // 早期版本把端点指向了一个第三方镜像，统一迁回官方。
-  const LEGACY_HOSTS = ["jevtypesafe.org"];
+  // 这两类地址在浏览器里都读不到响应：
+  // jevtypesafe.org 是第三方站点，官方接口不返回 Access-Control-Allow-Origin。
+  // 统一迁回默认转发。
+  const LEGACY_HOSTS = ["jevtypesafe.org", "api.typesafe.ai"];
 
   const LIMITS = { choice: { min: 2, max: 20 }, score: { min: 2, max: 10 } };
 

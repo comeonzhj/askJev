@@ -126,7 +126,13 @@
   </section>
 
   <footer class="foot">
-    <span>Jev 给出的是判断信号，不是命令。后果仍归你。</span>
+    <div class="foot-note">
+      <p>
+        推理请求经 <code>askjev.comeonzhj.com</code> 转发——一台个人服务器，只补 CORS 头、不存 Key，
+        不保证永久可用。挂了的话，看<a href="https://github.com/comeonzhj/askJev/blob/main/DEPLOY.md" target="_blank" rel="noopener noreferrer">自己部署</a>。
+      </p>
+      <p>Jev 给出的是判断信号，不是命令。后果仍归你。</p>
+    </div>
     <a href="https://docs.typesafe.ai/api.md" target="_blank" rel="noopener noreferrer">API 文档 ↗</a>
   </footer>
 </main>
@@ -184,7 +190,8 @@
       <button type="button" class="x" data-close aria-label="关闭">×</button>
     </div>
     <p class="modal-note">
-      Key 只存在这台设备的 localStorage，不经过任何服务器。页面是纯静态的，请求由你的浏览器直发 TypeSafe。
+      Key 只存在这台设备的 localStorage，不经过任何服务器。请求经 <code>askjev.comeonzhj.com</code>
+      转发到 TypeSafe——那台机器只加 CORS 头，不记录 Key，也不保证长期可用。
     </p>
 
     <label class="field">
@@ -198,7 +205,7 @@
     <label class="field">
       <span class="field-k">端点</span>
       <input id="endpoint" type="text" spellcheck="false" autocomplete="off" />
-      <span class="field-hint">官方：https://api.typesafe.ai/v1/systemone。若此地址在你的网络下不可达，可换成自己的转发地址（需返回 CORS 头）。</span>
+      <span class="field-hint">默认是 <code>https://askjev.comeonzhj.com/v1/systemone</code>。自己部署转发后，换成你的地址即可；接口路径保持 <code>/v1/systemone</code>。</span>
     </label>
 
     <div class="modal-actions">
@@ -207,7 +214,9 @@
     </div>
     <p class="test-result" id="testResult"></p>
     <p class="modal-foot">
-      还没有 Key？<a href="https://docs.typesafe.ai/api.md" target="_blank" rel="noopener noreferrer">看接口文档 ↗</a>
+      <a href="https://docs.typesafe.ai/api.md" target="_blank" rel="noopener noreferrer">接口文档 ↗</a>
+      <span class="dot-sep">·</span>
+      <a href="https://github.com/comeonzhj/askJev/blob/main/DEPLOY.md" target="_blank" rel="noopener noreferrer">自己部署转发 ↗</a>
     </p>
   </div>
 </div>

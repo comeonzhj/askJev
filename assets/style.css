@@ -675,11 +675,33 @@ textarea:focus {
   border-top: 1px solid var(--gray-15);
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 24px;
+  gap: 16px 24px;
   justify-content: space-between;
+  align-items: flex-start;
   font-size: 11px;
   letter-spacing: 0.04em;
   color: var(--gray-40);
+}
+
+.foot-note {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 620px;
+  line-height: 1.85;
+}
+
+.foot-note p {
+  margin: 0;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.94em;
+  letter-spacing: 0;
+  color: var(--gray-70);
+  background: var(--gray-04);
+  padding: 1px 4px;
 }
 
 .foot a {
@@ -1383,4 +1405,9 @@ body.is-seeking .veil {
     filter: none;
     transform: none;
   }
+}
+
+.dot-sep {
+  color: var(--gray-25);
+  margin: 0 6px;
 }

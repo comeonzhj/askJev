@@ -4,6 +4,9 @@
 
 在线地址：**https://comeonzhj.github.io/askJev/**
 
+> 演示站点的请求经作者的一台私人服务器（`askjev.comeonzhj.com`）转发，只补 CORS 头、不存 Key，
+> **不保证长期可用**。要长期用请自己部署，见 [DEPLOY.md](./DEPLOY.md)。
+
 一个极简的决策页面：写清背景，选一种决断方式，把问题交给 [Jev](https://typesafe.ai/) 的 System One 模型，几百毫秒后得到一个不带犹豫的答案。
 
 白、黑、灰。没有第三种颜色。
@@ -26,7 +29,8 @@ Jev 不是聊天模型。它读一段 state，返回类型化的判断：一个�
 2. 填入 TypeSafe 控制台里申请的 API Key，可以点「测试连接」验证。
 3. 写下背景，选类型，写下待决之事，求问。
 
-Key 只写入当前浏览器的 `localStorage`，不经过任何服务器。页面是纯静态的，请求由浏览器直接发往 Jev。
+Key 只写入当前浏览器的 `localStorage`。页面是纯静态的，请求经一个转发跳一次到 TypeSafe——转发层
+只加 CORS 响应头和透传请求，不落盘、不记日志。默认转发地址可在设置里换成自己的。
 
 > ⚠️ 请自行评估：浏览器直连意味着 Key 存在于前端。给他人使用的公开站点，建议改为自己的后端代理，不要把私人 Key 放在上面。
 
@@ -42,10 +46,10 @@ python3 -m http.server 4173
 ## 技术说明
 
 - 纯 HTML / CSS / JavaScript，无依赖、无框架、无打包。
-- 请求发往官方 `POST https://api.typesafe.ai/v1/systemone`，`Authorization: Bearer <API_KEY>`，请求体带 `model: jev-latest`。
-- 端点可在设置里替换。官方接口不返回 `Access-Control-Allow-Origin`，浏览器直接读取响应会被 CORS 拦下；
-  需要直连时，指向一个自己搭的、带 CORS 头的转发地址即可，Key 仍然由前端手动填写。
-- `api.typesafe.ai` 对部分区域返回 451，需要相应网络出口。
+- 请求格式遵循官方：`POST /v1/systemone`，`Authorization: Bearer <API_KEY>`，请求体带 `model: jev-latest`。
+- 官方接口不返回 `Access-Control-Allow-Origin`，浏览器读不到响应，所以中间必须有一层转发。
+  默认端点是 `https://askjev.comeonzhj.com/v1/systemone`，可在设置里换成自己的。做法见 [DEPLOY.md](./DEPLOY.md)。
+- `api.typesafe.ai` 对部分区域返回 451，转发服务器需要能访问它。
 - `state` 由「背景 + 待决之事」拼接，前端按 8000 字符提前校验。
 - 评分优先读响应里的 `legend` 还原档位文案，缺失时回退到本地刻度。
 - 选项在请求里映射为 `opt_1…opt_n`，回包再映射回原文，避免选项文本里的特殊字符影响 criteria key。

@@ -2,6 +2,8 @@
 
 > 雾里看不清的时候，把处境交给它。
 
+在线地址：**https://comeonzhj.github.io/askJev/**
+
 一个极简的决策页面：写清背景，选一种决断方式，把问题交给 [Jev](https://jevtypesafe.org/) 的 System One 模型，几秒后得到一个不带犹豫的答案。
 
 白、黑、灰。没有第三种颜色。
